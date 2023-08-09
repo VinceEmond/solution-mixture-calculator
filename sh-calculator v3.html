@@ -57,6 +57,32 @@
         background-color: #4c89af;
       }
 
+      .strength-button {
+        margin-bottom: 10px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: #ffffff;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+      }
+
+      .strength-button:nth-child(1) {
+        background-color: #af4c4c;
+      }
+
+      .strength-button:nth-child(2) {
+        background-color: #af9d4c;
+      }
+
+      .strength-button:nth-child(3) {
+        background-color: #78af4c;
+      }
+
+      .strength-button:hover {
+        filter: brightness(115%);
+      }
+
       button {
         display: block;
         width: 100%;
@@ -186,11 +212,15 @@
         </div>
 
         <div class="reference">
-          <ul>
-            <li onclick="applyCurrentStrength(3.5)">Roof mix: 3.5%-4%</li>
-            <li onclick="applyCurrentStrength(2)">House Wash: 2%</li>
-            <li onclick="applyCurrentStrength(1.5)">Vinyl: 1.5%</li>
-          </ul>
+          <button class="strength-button" onclick="applyCurrentStrength(3.5)">
+            Roof mix: 3.5%-4%
+          </button>
+          <button class="strength-button" onclick="applyCurrentStrength(2)">
+            House Wash: 2%
+          </button>
+          <button class="strength-button" onclick="applyCurrentStrength(1.5)">
+            Vinyl: 1.5%
+          </button>
         </div>
       </div>
 
@@ -222,11 +252,15 @@
         </div>
 
         <div class="reference">
-          <ul>
-            <li onclick="applyStrength(3.5)">Roof mix: 3.5%-4%</li>
-            <li onclick="applyStrength(2)">House Wash: 2%</li>
-            <li onclick="applyStrength(1.5)">Vinyl: 1.5%</li>
-          </ul>
+          <button class="strength-button" onclick="applyStrength(3.5)">
+            Roof mix: 3.5%-4%
+          </button>
+          <button class="strength-button" onclick="applyStrength(2)">
+            House Wash: 2%
+          </button>
+          <button class="strength-button" onclick="applyStrength(1.5)">
+            Vinyl: 1.5%
+          </button>
         </div>
       </div>
 
