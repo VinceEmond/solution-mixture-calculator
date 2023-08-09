@@ -252,13 +252,13 @@
         </div>
 
         <div class="reference">
-          <button class="strength-button" onclick="applyStrength(3.5)">
+          <button class="strength-button" onclick="applyNewStrength(3.5)">
             Roof Mix (3.5%-4%)
           </button>
-          <button class="strength-button" onclick="applyStrength(2)">
+          <button class="strength-button" onclick="applyNewStrength(2)">
             House Wash (2%)
           </button>
-          <button class="strength-button" onclick="applyStrength(1.5)">
+          <button class="strength-button" onclick="applyNewStrength(1.5)">
             Vinyl (1.5%)
           </button>
         </div>
@@ -271,10 +271,11 @@
 
     <script>
       parent.document.getElementsByTagName('iframe')[0].scrolling = 'no';
-      const STRENGTH_APPLE_BOOST = 5; // ounces per 50 gallons
-      const STRENGTH_SH_BARREL = 12; // Strength of SH Liquid in Blue Barrels in %
 
       function calculateVolume() {
+        var STRENGTH_APPLE_BOOST = 5; // ounces per 50 gallons
+        var STRENGTH_SH_BARREL = 12; // Strength of SH Liquid in Blue Barrels in %
+
         var currentVolume = parseFloat(
           document.getElementById('currentVolume').value
         );
@@ -282,9 +283,15 @@
           document.getElementById('currentPercentage').value
         );
         var newVolume = parseFloat(document.getElementById('newVolume').value);
+
         var newPercentage = parseFloat(
           document.getElementById('newPercentage').value
         );
+
+        console.log('currentVolume', currentVolume);
+        console.log('currentPercentage', currentPercentage);
+        console.log('newVolume', newVolume);
+        console.log('newPercentage', newPercentage);
 
         var errorMessages = [];
 
@@ -330,26 +337,36 @@
           resultElement.innerHTML = errorMessages.join('<br>');
           return;
         }
-
         // Calculate the amount of 12% SH liquid to add
         var currentSH = (currentPercentage / 100) * currentVolume;
+        console.log('🚀 ~ currentSH:', currentSH);
         var newSH = (newPercentage / 100) * newVolume;
+        console.log('🚀 ~ newSH:', newSH);
         var additionalSH = newSH - currentSH;
+        console.log('🚀 ~ additionalSH:', additionalSH);
         var additionalVolume = (
           additionalSH /
           (STRENGTH_SH_BARREL / 100)
         ).toFixed(1);
+        console.log('🚀 ~ additionalVolume:', additionalVolume);
 
         // Calculate the amount of "apple boost" liquid to add
         var appleBoostOunces = (newVolume / 50) * STRENGTH_APPLE_BOOST;
         var appleBoostInML = (appleBoostOunces * 29.5735).toFixed(1); // Conversion from ounces to milliliters
         var appleBoostInCups = (appleBoostInML / 236.588).toFixed(1); // Conversion from ounces to cups
 
+        // Calculate the amount of water to add
+        var newVolume = parseFloat(document.getElementById('newVolume').value);
+        var currentVolume = parseFloat(
+          document.getElementById('currentVolume').value
+        );
+        var additionalWater = (newVolume - currentVolume).toFixed(1);
+
         // Display the results
-        var resultElement = document.getElementById('result');
-        resultElement.style.display = 'block';
-        resultElement.classList.remove('error');
-        resultElement.innerHTML =
+        var resultContainer = document.getElementById('result');
+        resultContainer.style.display = 'block';
+        resultContainer.classList.remove('error');
+        resultContainer.innerHTML =
           'Add ' +
           additionalVolume +
           ' gallons of SH to reach ' +
@@ -363,10 +380,13 @@
           appleBoostInML +
           ' ml / ' +
           appleBoostOunces.toFixed(1) +
-          ' oz) of Apple boost.';
+          ' oz) of Apple boost.<br>' +
+          'Add ' +
+          additionalWater +
+          ' gallons of water to reach the total new volume.';
       }
 
-      function applyStrength(strength) {
+      function applyNewStrength(strength) {
         var newPercentageInput = document.getElementById('newPercentage');
         newPercentageInput.value = strength;
       }
