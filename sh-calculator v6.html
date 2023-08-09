@@ -344,11 +344,10 @@
         console.log('🚀 ~ newSH:', newSH);
         var additionalSH = newSH - currentSH;
         console.log('🚀 ~ additionalSH:', additionalSH);
-        var additionalVolume = (
-          additionalSH /
-          (STRENGTH_SH_BARREL / 100)
-        ).toFixed(1);
-        console.log('🚀 ~ additionalVolume:', additionalVolume);
+        var additionalSH = (additionalSH / (STRENGTH_SH_BARREL / 100)).toFixed(
+          1
+        );
+        console.log('🚀 ~ additionalVolume:', additionalSH);
 
         // Calculate the amount of "apple boost" liquid to add
         var appleBoostOunces = (newVolume / 50) * STRENGTH_APPLE_BOOST;
@@ -367,23 +366,24 @@
         resultContainer.style.display = 'block';
         resultContainer.classList.remove('error');
         resultContainer.innerHTML =
-          'Add ' +
-          additionalVolume +
-          ' gallons of SH to reach ' +
+          'To reach ' +
           newVolume +
           ' gallons @ ' +
           newPercentage +
-          '% strength<br>' +
-          'Add ' +
+          '% add: <br>' +
+          '- SH: ' +
+          additionalSH +
+          ' gallons<br>' +
+          '- Water: ' +
+          additionalWater +
+          ' gallons<br>' +
+          '- Apple boost ' +
           appleBoostInCups +
           ' cups (' +
           appleBoostInML +
           ' ml / ' +
           appleBoostOunces.toFixed(1) +
-          ' oz) of Apple boost.<br>' +
-          'Add ' +
-          additionalWater +
-          ' gallons of water to reach the total new volume.';
+          ' oz)<br>';
       }
 
       function applyNewStrength(strength) {
