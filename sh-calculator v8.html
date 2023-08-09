@@ -210,6 +210,17 @@
             required
           />
         </div>
+
+        <!-- Add checkboxes for "Contains Apple Boost" -->
+        <div class="input-group">
+          <label for="hasAppleBoost">Contains Apple Boost:</label>
+          <input
+            type="checkbox"
+            id="hasAppleBoost"
+            onchange="updateHasAppleBoost()"
+          />
+        </div>
+
         <div class="reference">
           <div class="volume-button-group">
             <button onclick="applyCurrentVolume(90)">90</button>
@@ -279,6 +290,14 @@
 
     <script>
       parent.document.getElementsByTagName('iframe')[0].scrolling = 'no';
+
+      var hasAppleBoost = false; // Variable to store the state of "Contains Apple Boost" checkbox
+
+      // Function to update the hasAppleBoost variable when the checkbox is clicked
+      function updateHasAppleBoost() {
+        var checkbox = document.getElementById('hasAppleBoost');
+        hasAppleBoost = checkbox.checked;
+      }
 
       function calculateVolume() {
         var STRENGTH_APPLE_BOOST = 5; // ounces per 50 gallons
@@ -372,7 +391,18 @@
         );
 
         // Calculate the amount of "apple boost" liquid to add
-        var appleBoostOunces = (newVolume / 50) * STRENGTH_APPLE_BOOST;
+        var volumeForAppleBoost = 0;
+        if (hasAppleBoost) {
+          volumeForAppleBoost = newVolume - currentVolume;
+        } else {
+          volumeForAppleBoost = newVolume;
+        }
+
+        console.log(
+          `Apple boost volume is calculated based on ${volumeForAppleBoost} gallons`
+        );
+        var appleBoostOunces =
+          (volumeForAppleBoost / 50) * STRENGTH_APPLE_BOOST;
         var appleBoostInML = (appleBoostOunces * 29.5735).toFixed(1); // Conversion from ounces to milliliters
         var appleBoostInCups = (appleBoostInML / 236.588).toFixed(1); // Conversion from ounces to cups
 
