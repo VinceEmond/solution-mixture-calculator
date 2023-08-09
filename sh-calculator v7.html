@@ -3,6 +3,14 @@
   <head>
     <title>Volume Calculator</title>
     <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: green;
+      }
       body {
         font-family: Arial, sans-serif;
         background-color: #f2f2f2;
@@ -192,7 +200,7 @@
             step="0.01"
             required
           />
-          <label for="currentPercentage">Strength (%):</label>
+          <label for="currentPercentage">Current Strength %:</label>
           <input
             type="number"
             id="currentPercentage"
@@ -231,7 +239,7 @@
         <div class="input-group">
           <label for="newVolume">New Volume:</label>
           <input type="number" id="newVolume" min="0" step="0.01" required />
-          <label for="newPercentage">New Strength (%):</label>
+          <label for="newPercentage">New Strength %:</label>
           <input
             type="number"
             id="newPercentage"
@@ -288,66 +296,80 @@
           document.getElementById('newPercentage').value
         );
 
-        console.log('currentVolume', currentVolume);
-        console.log('currentPercentage', currentPercentage);
-        console.log('newVolume', newVolume);
-        console.log('newPercentage', newPercentage);
-
-        var errorMessages = [];
+        var validationErrorMessages = [];
 
         // Check if the current volume is larger than the new volume
         if (currentVolume > newVolume) {
-          errorMessages.push(
-            'Desired volume is smaller than current volume, please adjust values and try again.'
+          validationErrorMessages.push(
+            '- Desired volume is smaller than current volume, please adjust values and try again.'
+          );
+        }
+
+        // Check if volumes are the same
+        if (currentVolume == newVolume) {
+          validationErrorMessages.push(
+            '- Desired volume is the same as current volume, please adjust values and try again.'
           );
         }
 
         // Check if the current strength value is too high
         if (currentPercentage > 5) {
-          errorMessages.push(
-            'Current mixture strength value is too high, please adjust and try again.'
+          validationErrorMessages.push(
+            '- Current mixture strength value is too high, please adjust and try again.'
           );
         }
 
         // Check if the current strength value is too low
-        if (currentPercentage < 0.5) {
-          errorMessages.push(
-            'Current mixture strength value is too low, please adjust and try again.'
+        if (currentPercentage < 0.5 && currentPercentage != 0) {
+          validationErrorMessages.push(
+            '- Current mixture strength value is too low, please adjust and try again.'
           );
         }
 
         // Check if the new strength value is too high
         if (newPercentage > 5) {
-          errorMessages.push(
-            'Desired new mixture strength value is too high, please adjust and try again.'
+          validationErrorMessages.push(
+            '- Desired new mixture strength value is too high, please adjust and try again.'
           );
         }
 
         // Check if the new strength value is too low
         if (newPercentage < 0.5) {
-          errorMessages.push(
-            'Desired new mixture strength value is too low, please adjust and try again.'
+          validationErrorMessages.push(
+            '- Desired new mixture strength value is too low, please adjust and try again.'
           );
         }
 
-        if (errorMessages.length > 0) {
+        // Check if the current strength value is missing
+        if (currentVolume && !currentPercentage) {
+          validationErrorMessages.push(
+            '- Please enter the strength of the current mix.'
+          );
+        }
+
+        // Check if the new strength value is missing
+        if (newVolume && !newPercentage) {
+          validationErrorMessages.push(
+            '- Please enter the strength of the desired mix.'
+          );
+        }
+
+        if (validationErrorMessages.length > 0) {
           var resultElement = document.getElementById('result');
           resultElement.style.display = 'block';
           resultElement.classList.add('error');
-          resultElement.innerHTML = errorMessages.join('<br>');
+          resultElement.innerHTML =
+            'Error: <br>' + validationErrorMessages.join('<br>');
           return;
         }
+
         // Calculate the amount of 12% SH liquid to add
         var currentSH = (currentPercentage / 100) * currentVolume;
-        console.log('🚀 ~ currentSH:', currentSH);
         var newSH = (newPercentage / 100) * newVolume;
-        console.log('🚀 ~ newSH:', newSH);
         var additionalSH = newSH - currentSH;
-        console.log('🚀 ~ additionalSH:', additionalSH);
         var additionalSH = (additionalSH / (STRENGTH_SH_BARREL / 100)).toFixed(
           1
         );
-        console.log('🚀 ~ additionalVolume:', additionalSH);
 
         // Calculate the amount of "apple boost" liquid to add
         var appleBoostOunces = (newVolume / 50) * STRENGTH_APPLE_BOOST;
@@ -359,31 +381,51 @@
         var currentVolume = parseFloat(
           document.getElementById('currentVolume').value
         );
-        var additionalWater = (newVolume - currentVolume).toFixed(1);
+        var additionalWater = (
+          newVolume -
+          currentVolume -
+          additionalSH
+        ).toFixed(1);
+
+        var calculationErrorMessages = [];
+
+        // Check if the calculations create negative answers
+        if (additionalWater < 0 || additionalSH < 0) {
+          calculationErrorMessages.push(
+            '- Desired new mixture cannot be reach with current combination.'
+          );
+        }
+
+        if (calculationErrorMessages.length > 0) {
+          var resultElement = document.getElementById('result');
+          resultElement.style.display = 'block';
+          resultElement.classList.add('error');
+          resultElement.innerHTML =
+            'Calculation Error: <br>' + calculationErrorMessages.join('<br>');
+          return;
+        }
 
         // Display the results
         var resultContainer = document.getElementById('result');
         resultContainer.style.display = 'block';
         resultContainer.classList.remove('error');
         resultContainer.innerHTML =
-          'To reach ' +
+          'For ' +
           newVolume +
           ' gallons @ ' +
           newPercentage +
           '% add: <br>' +
           '- SH: ' +
-          additionalSH +
+          (+additionalSH).toFixed(1).replace(/\.0+$/, '') +
           ' gallons<br>' +
           '- Water: ' +
-          additionalWater +
+          (+additionalWater).toFixed(1).replace(/\.0+$/, '') +
           ' gallons<br>' +
-          '- Apple boost ' +
+          '- AppleBoost: ' +
           appleBoostInCups +
           ' cups (' +
           appleBoostInML +
-          ' ml / ' +
-          appleBoostOunces.toFixed(1) +
-          ' oz)<br>';
+          ' ml)<br>';
       }
 
       function applyNewStrength(strength) {
