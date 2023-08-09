@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Volume Calculator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333333;
+      }
+
+      .container {
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: inline-block;
+        width: 48%;
+        margin-bottom: 5px;
+        color: #555555;
+        font-weight: bold;
+      }
+
+      input[type='number'] {
+        width: 48%;
+        padding: 10px;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
+
+      .volume-button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .volume-button-group button {
+        width: 23%;
+        background-color: #4c89af;
+      }
+
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #4caf50;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 10px; /* Added margin */
+      }
+
+      button:active {
+        transform: scale(0.99);
+        filter: brightness(98%);
+      }
+
+      button:hover {
+        filter: brightness(115%);
+      }
+
+      .result {
+        display: none;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+
+      .result.error {
+        background-color: red;
+        color: white;
+      }
+
+      .reference {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 12px;
+      }
+
+      .reference ul {
+        padding-left: 0;
+        list-style: none;
+        /* display: flex; */ /* Remove display flex */
+        /* flex-wrap: wrap; */ /* Remove flex-wrap */
+        justify-content: center;
+      }
+
+      .reference ul li {
+        /* margin-right: 10px; */ /* Remove margin-right */
+        margin-bottom: 10px; /* Add margin-bottom to stack buttons */
+        cursor: pointer;
+        background-color: #4caf50;
+        color: #ffffff;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%; /* Set the width to 100% */
+      }
+
+      .reference ul li:nth-child(1) {
+        background-color: #af4c4c;
+      }
+
+      .reference ul li:nth-child(2) {
+        background-color: #af9d4c;
+      }
+
+      .reference ul li:nth-child(3) {
+        background-color: #78af4c;
+      }
+
+      .reference ul li:hover {
+        filter: brightness(115%);
+      }
+
+      .existing-mix {
+        background-color: #f9f9f9;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+      }
+
+      .desired-mix {
+        background-color: #eaf6f9;
+        padding: 10px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>SH Calculator</h1>
+
+      <div class="existing-mix">
+        <div class="reference">
+          <h4>EXISTING MIX</h4>
+        </div>
+        <div class="input-group">
+          <label for="currentVolume">Current Volume:</label>
+          <input
+            type="number"
+            id="currentVolume"
+            min="0"
+            step="0.01"
+            required
+          />
+          <label for="currentPercentage">Strength (%):</label>
+          <input
+            type="number"
+            id="currentPercentage"
+            min="0"
+            max="100"
+            step="0.01"
+            required
+          />
+        </div>
+        <div class="reference">
+          <div class="volume-button-group">
+            <button onclick="applyCurrentVolume(90)">90</button>
+            <button onclick="applyCurrentVolume(70)">70</button>
+            <button onclick="applyCurrentVolume(50)">50</button>
+            <button onclick="applyCurrentVolume(30)">30</button>
+          </div>
+        </div>
+
+        <div class="reference">
+          <ul>
+            <li onclick="applyCurrentStrength(3.5)">Roof mix: 3.5%-4%</li>
+            <li onclick="applyCurrentStrength(2)">House Wash: 2%</li>
+            <li onclick="applyCurrentStrength(1.5)">Vinyl: 1.5%</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="desired-mix">
+        <div class="reference">
+          <h4>DESIRED MIX</h4>
+        </div>
+        <div class="input-group">
+          <label for="newVolume">New Volume:</label>
+          <input type="number" id="newVolume" min="0" step="0.01" required />
+          <label for="newPercentage">New Strength (%):</label>
+          <input
+            type="number"
+            id="newPercentage"
+            min="0"
+            max="100"
+            step="0.01"
+            required
+          />
+        </div>
+
+        <div class="reference">
+          <div class="volume-button-group">
+            <button onclick="applyNewVolume(90)">90</button>
+            <button onclick="applyNewVolume(70)">70</button>
+            <button onclick="applyNewVolume(50)">50</button>
+            <button onclick="applyNewVolume(30)">30</button>
+          </div>
+        </div>
+
+        <div class="reference">
+          <ul>
+            <li onclick="applyStrength(3.5)">Roof mix: 3.5%-4%</li>
+            <li onclick="applyStrength(2)">House Wash: 2%</li>
+            <li onclick="applyStrength(1.5)">Vinyl: 1.5%</li>
+          </ul>
+        </div>
+      </div>
+
+      <button onclick="calculateVolume()">Calculate</button>
+
+      <div class="result" id="result"></div>
+    </div>
+
+    <script>
+      parent.document.getElementsByTagName('iframe')[0].scrolling = 'no';
+      const STRENGTH_APPLE_BOOST = 5; // ounces per 50 gallons
+      const STRENGTH_SH_BARREL = 12; // Strength of SH Liquid in Blue Barrels in %
+
+      function calculateVolume() {
+        var currentVolume = parseFloat(
+          document.getElementById('currentVolume').value
+        );
+        var currentPercentage = parseFloat(
+          document.getElementById('currentPercentage').value
+        );
+        var newVolume = parseFloat(document.getElementById('newVolume').value);
+        var newPercentage = parseFloat(
+          document.getElementById('newPercentage').value
+        );
+
+        var errorMessages = [];
+
+        // Check if the current volume is larger than the new volume
+        if (currentVolume > newVolume) {
+          errorMessages.push(
+            'Desired volume is smaller than current volume, please adjust values and try again.'
+          );
+        }
+
+        // Check if the current strength value is too high
+        if (currentPercentage > 5) {
+          errorMessages.push(
+            'Current mixture strength value is too high, please adjust and try again.'
+          );
+        }
+
+        // Check if the current strength value is too low
+        if (currentPercentage < 0.5) {
+          errorMessages.push(
+            'Current mixture strength value is too low, please adjust and try again.'
+          );
+        }
+
+        // Check if the new strength value is too high
+        if (newPercentage > 5) {
+          errorMessages.push(
+            'Desired new mixture strength value is too high, please adjust and try again.'
+          );
+        }
+
+        // Check if the new strength value is too low
+        if (newPercentage < 0.5) {
+          errorMessages.push(
+            'Desired new mixture strength value is too low, please adjust and try again.'
+          );
+        }
+
+        if (errorMessages.length > 0) {
+          var resultElement = document.getElementById('result');
+          resultElement.style.display = 'block';
+          resultElement.classList.add('error');
+          resultElement.innerHTML = errorMessages.join('<br>');
+          return;
+        }
+
+        // Calculate the amount of 12% SH liquid to add
+        var currentSH = (currentPercentage / 100) * currentVolume;
+        var newSH = (newPercentage / 100) * newVolume;
+        var additionalSH = newSH - currentSH;
+        var additionalVolume = (
+          additionalSH /
+          (STRENGTH_SH_BARREL / 100)
+        ).toFixed(1);
+
+        // Calculate the amount of "apple boost" liquid to add
+        var appleBoostOunces = (newVolume / 50) * STRENGTH_APPLE_BOOST;
+        var appleBoostInML = (appleBoostOunces * 29.5735).toFixed(1); // Conversion from ounces to milliliters
+        var appleBoostInCups = (appleBoostInML / 236.588).toFixed(1); // Conversion from ounces to cups
+
+        // Display the results
+        var resultElement = document.getElementById('result');
+        resultElement.style.display = 'block';
+        resultElement.classList.remove('error');
+        resultElement.innerHTML =
+          'Add ' +
+          additionalVolume +
+          ' gallons of SH to reach ' +
+          newVolume +
+          ' gallons @ ' +
+          newPercentage +
+          '% strength<br>' +
+          'Add ' +
+          appleBoostInCups +
+          ' cups (' +
+          appleBoostInML +
+          ' ml / ' +
+          appleBoostOunces.toFixed(1) +
+          ' oz) of Apple boost.';
+      }
+
+      function applyStrength(strength) {
+        var newPercentageInput = document.getElementById('newPercentage');
+        newPercentageInput.value = strength;
+      }
+
+      function applyNewVolume(volume) {
+        var newVolumeInput = document.getElementById('newVolume');
+        newVolumeInput.value = volume;
+      }
+
+      function applyCurrentVolume(volume) {
+        var currentVolumeInput = document.getElementById('currentVolume');
+        currentVolumeInput.value = volume;
+      }
+
+      function applyCurrentStrength(strength) {
+        var currentPercentageInput =
+          document.getElementById('currentPercentage');
+        currentPercentageInput.value = strength;
+      }
+    </script>
+  </body>
+</html>
