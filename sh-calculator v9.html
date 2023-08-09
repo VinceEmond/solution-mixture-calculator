@@ -5,23 +5,17 @@
     <style>
       html,
       body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: green;
-      }
-      body {
         font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
+        background-color: #ffffff;
+
         margin: 0;
-        padding: 20px;
+        padding: 0px;
         box-sizing: border-box;
       }
 
       h1 {
         text-align: center;
-        color: #333333;
+        color: #343434;
       }
 
       .container {
@@ -29,7 +23,7 @@
         margin: 0 auto;
         background-color: #ffffff;
         padding: 20px;
-        border-radius: 4px;
+        border-radius: 6px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
@@ -95,7 +89,7 @@
         display: block;
         width: 100%;
         padding: 10px;
-        background-color: #4caf50;
+        background-color: #4d574d;
         color: #ffffff;
         border: none;
         border-radius: 4px;
@@ -170,16 +164,28 @@
       }
 
       .existing-mix {
-        background-color: #f9f9f9;
+        background-color: #dfdfdf;
         padding: 10px;
         margin-bottom: 20px;
         border-radius: 4px;
       }
 
       .desired-mix {
-        background-color: #eaf6f9;
+        background-color: #d1eef5;
         padding: 10px;
         border-radius: 4px;
+      }
+
+      .calculateBtn {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #calculateBtn {
+        width: 50%;
+        font-weight: bold;
       }
     </style>
   </head>
@@ -283,7 +289,9 @@
         </div>
       </div>
 
-      <button onclick="calculateVolume()">Calculate</button>
+      <div class="calculateBtn">
+        <button id="calculateBtn" onclick="calculateVolume()">CALCULATE</button>
+      </div>
 
       <div class="result" id="result"></div>
     </div>
@@ -303,59 +311,70 @@
         var STRENGTH_APPLE_BOOST = 5; // ounces per 50 gallons
         var STRENGTH_SH_BARREL = 12; // Strength of SH Liquid in Blue Barrels in %
 
-        var currentVolume = parseFloat(
-          document.getElementById('currentVolume').value
-        );
-        var currentPercentage = parseFloat(
-          document.getElementById('currentPercentage').value
-        );
-        var newVolume = parseFloat(document.getElementById('newVolume').value);
-
-        var newPercentage = parseFloat(
-          document.getElementById('newPercentage').value
-        );
+        var currentVolume =
+          parseFloat(document.getElementById('currentVolume').value) || 0;
+        var currentPercentage =
+          parseFloat(document.getElementById('currentPercentage').value) || 0;
+        var newVolume =
+          parseFloat(document.getElementById('newVolume').value) || 0;
+        var newPercentage =
+          parseFloat(document.getElementById('newPercentage').value) || 0;
 
         var validationErrorMessages = [];
+
+        // Check if all values are blank
+        if (
+          currentVolume === 0 &&
+          currentPercentage === 0 &&
+          newVolume === 0 &&
+          newPercentage === 0
+        ) {
+          var resultElement = document.getElementById('result');
+          resultElement.style.display = 'block';
+          resultElement.classList.add('error');
+          resultElement.innerHTML = 'Error: <br>- All inputs are blank';
+          return;
+        }
 
         // Check if the current volume is larger than the new volume
         if (currentVolume > newVolume) {
           validationErrorMessages.push(
-            '- Desired volume is smaller than current volume, please adjust values and try again.'
+            '- Desired volume is smaller than current volume.'
           );
         }
 
         // Check if volumes are the same
         if (currentVolume == newVolume) {
           validationErrorMessages.push(
-            '- Desired volume is the same as current volume, please adjust values and try again.'
+            '- Desired volume is the same as current volume.'
           );
         }
 
         // Check if the current strength value is too high
         if (currentPercentage > 5) {
           validationErrorMessages.push(
-            '- Current mixture strength value is too high, please adjust and try again.'
+            '- Current mixture strength value is too high.'
           );
         }
 
         // Check if the current strength value is too low
         if (currentPercentage < 0.5 && currentPercentage != 0) {
           validationErrorMessages.push(
-            '- Current mixture strength value is too low, please adjust and try again.'
+            '- Current mixture strength value is too low.'
           );
         }
 
         // Check if the new strength value is too high
         if (newPercentage > 5) {
           validationErrorMessages.push(
-            '- Desired new mixture strength value is too high, please adjust and try again.'
+            '- Desired new mixture strength value is too high.'
           );
         }
 
         // Check if the new strength value is too low
         if (newPercentage < 0.5) {
           validationErrorMessages.push(
-            '- Desired new mixture strength value is too low, please adjust and try again.'
+            '- Desired new mixture strength value is too low.'
           );
         }
 
@@ -367,9 +386,16 @@
         }
 
         // Check if the new strength value is missing
-        if (newVolume && !newPercentage) {
+        if (!newPercentage) {
           validationErrorMessages.push(
             '- Please enter the strength of the desired mix.'
+          );
+        }
+
+        // Check if the new volume value is missing
+        if (!newVolume) {
+          validationErrorMessages.push(
+            '- Please enter the volume of the desired mix.'
           );
         }
 
@@ -382,13 +408,26 @@
           return;
         }
 
+        if (currentVolume == null || currentVolume == '') {
+          currentVolume = 0;
+        }
+
+        if (currentPercentage == null || currentPercentage == '') {
+          currentPercentage = 0;
+        }
+
         // Calculate the amount of 12% SH liquid to add
-        var currentSH = (currentPercentage / 100) * currentVolume;
+        if (currentPercentage == 0 && currentVolume == 0) {
+          var currentSH = 0;
+        } else {
+          var currentSH = (currentPercentage / 100) * currentVolume;
+          // var additionalSH = 0;
+        }
         var newSH = (newPercentage / 100) * newVolume;
-        var additionalSH = newSH - currentSH;
-        var additionalSH = (additionalSH / (STRENGTH_SH_BARREL / 100)).toFixed(
-          1
-        );
+        var additionalSH = (
+          (newSH - currentSH) /
+          (STRENGTH_SH_BARREL / 100)
+        ).toFixed(1);
 
         // Calculate the amount of "apple boost" liquid to add
         var volumeForAppleBoost = 0;
@@ -398,19 +437,12 @@
           volumeForAppleBoost = newVolume;
         }
 
-        console.log(
-          `Apple boost volume is calculated based on ${volumeForAppleBoost} gallons`
-        );
         var appleBoostOunces =
           (volumeForAppleBoost / 50) * STRENGTH_APPLE_BOOST;
         var appleBoostInML = (appleBoostOunces * 29.5735).toFixed(1); // Conversion from ounces to milliliters
         var appleBoostInCups = (appleBoostInML / 236.588).toFixed(1); // Conversion from ounces to cups
 
         // Calculate the amount of water to add
-        var newVolume = parseFloat(document.getElementById('newVolume').value);
-        var currentVolume = parseFloat(
-          document.getElementById('currentVolume').value
-        );
         var additionalWater = (
           newVolume -
           currentVolume -
@@ -426,6 +458,10 @@
           );
         }
 
+        if (isNaN(additionalWater) || isNaN(additionalSH)) {
+          calculationErrorMessages.push('- Results were not a valid number.');
+        }
+
         if (calculationErrorMessages.length > 0) {
           var resultElement = document.getElementById('result');
           resultElement.style.display = 'block';
@@ -439,23 +475,14 @@
         var resultContainer = document.getElementById('result');
         resultContainer.style.display = 'block';
         resultContainer.classList.remove('error');
-        resultContainer.innerHTML =
-          'For ' +
-          newVolume +
-          ' gallons @ ' +
-          newPercentage +
-          '% add: <br>' +
-          '- SH: ' +
-          (+additionalSH).toFixed(1).replace(/\.0+$/, '') +
-          ' gallons<br>' +
-          '- Water: ' +
-          (+additionalWater).toFixed(1).replace(/\.0+$/, '') +
-          ' gallons<br>' +
-          '- AppleBoost: ' +
-          appleBoostInCups +
-          ' cups (' +
-          appleBoostInML +
-          ' ml)<br>';
+        resultContainer.innerHTML = `
+          For ${newVolume} gallons @ ${newPercentage}% add: <br>
+          - SH: ${(+additionalSH).toFixed(1).replace(/\.0+$/, '')} gallons<br>
+          - Water: ${(+additionalWater)
+            .toFixed(1)
+            .replace(/\.0+$/, '')} gallons<br>
+          - AppleBoost: ${appleBoostInCups} cups (${appleBoostInML} ml)<br>
+        `;
       }
 
       function applyNewStrength(strength) {
