@@ -13,7 +13,7 @@ An app designed to streamline the calculation of SH mixture for a Window/Gutter/
 ### Screenshots
 
 <p align="middle" float="left">
-  <img align="top" src="" width="30%" />
-  <img align="top" src="" width="30%" />
-  <img align="top" src="" width="30%" />
+  <img align="top" src="https://github.com/VinceEmond/solution-mixture-calculator/blob/main/public/Shine-99-Solution-Mixture-Calculator-1.png?raw=true" width="30%" />
+  <img align="top" src="https://github.com/VinceEmond/solution-mixture-calculator/blob/main/public/Shine-99-Solution-Mixture-Calculator-2.png?raw=true" width="30%" />
+  <img align="top" src="https://github.com/VinceEmond/solution-mixture-calculator/blob/main/public/Shine-99-Solution-Mixture-Calculator-3.png?raw=true" width="30%" />
 </p>
